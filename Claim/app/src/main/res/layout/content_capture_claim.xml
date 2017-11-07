@@ -92,7 +92,7 @@
             android:orientation="vertical">
 
             <RadioGroup
-                android:id="@+id/category"
+                android:id="@+id/categories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
