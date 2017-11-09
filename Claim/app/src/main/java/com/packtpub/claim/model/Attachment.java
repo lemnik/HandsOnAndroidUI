@@ -3,19 +3,39 @@ package com.packtpub.claim.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.io.File;
 
 /**
  * Created by jason on 2017/11/07.
  */
+@Entity(indices = @Index("claimItemId"))
 public class Attachment implements Parcelable {
-
+    @PrimaryKey(autoGenerate = true)
+    public long id;
+    public long claimItemId;
     File file;
     Type type;
 
+    public Attachment() {
+        //empty
+    }
+
+    @Ignore
     public Attachment(final File file, final Type type) {
         this.file = file;
         this.type = Type.safe(type);
+    }
+
+    protected Attachment(final Parcel in) {
+        id = in.readLong();
+        claimItemId = in.readLong();
+        file = new File(in.readString());
+        type = Type.values()[in.readInt()];
     }
 
     public File getFile() {
@@ -34,13 +54,10 @@ public class Attachment implements Parcelable {
         this.type = Type.safe(type);
     }
 
-    protected Attachment(final Parcel in) {
-        file = new File(in.readString());
-        type = Type.values()[in.readInt()];
-    }
-
     @Override
     public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeLong(id);
+        dest.writeLong(claimItemId);
         dest.writeString(file.getAbsolutePath());
         dest.writeInt(type.ordinal());
     }
