@@ -14,6 +14,11 @@
     <string name="description_business">Business</string>
     <string name="description_entertainment">Entertainment</string>
     <string name="description_other">Other</string>
-    <string name="description_room_service">Room Service</string>
+    <string name="description_food">Room Service</string>
     <string name="description_transport">Transport</string>
+
+    <string name="err_attach_failed">Couldn\'t attach file.</string>
+
+    <string name="msg_claim_item_deleted">%s Deleted</string>
+    <string name="undo">Undo</string>
 </resources>
