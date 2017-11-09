@@ -16,6 +16,7 @@ public class ClaimApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         DATABASE = Room.databaseBuilder(
                 this, /* Context */
                 ClaimDatabase.class, /* Abstract Database Class */

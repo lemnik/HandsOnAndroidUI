@@ -2,6 +2,7 @@ package com.packtpub.claim.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
@@ -21,7 +22,7 @@ public class ClaimItem implements Parcelable {
     public long id;
 
     String description;
-    double amount;
+    public double amount;
     Date timestamp;
     Category category;
 
@@ -48,7 +49,8 @@ public class ClaimItem implements Parcelable {
     }
 
     public void setDescription(final String description) {
-        this.description = description;
+        this.description =
+                description;
     }
 
     public double getAmount() {
@@ -64,7 +66,8 @@ public class ClaimItem implements Parcelable {
     }
 
     public void setTimestamp(final Date timestamp) {
-        this.timestamp = timestamp;
+        this.timestamp =
+                timestamp;
     }
 
     public Category getCategory() {
@@ -72,7 +75,8 @@ public class ClaimItem implements Parcelable {
     }
 
     public void setCategory(final Category category) {
-        this.category = category;
+        this.category =
+                category;
     }
 
     public void addAttachment(final Attachment attachment) {
@@ -87,6 +91,13 @@ public class ClaimItem implements Parcelable {
 
     public List<Attachment> getAttachments() {
         return Collections.unmodifiableList(attachments);
+    }
+
+    public boolean isValid() {
+        return !TextUtils.isEmpty(description)
+                && amount > 0
+                && timestamp != null
+                && category != null;
     }
 
     @Override
@@ -115,4 +126,5 @@ public class ClaimItem implements Parcelable {
             return new ClaimItem[size];
         }
     };
+
 }

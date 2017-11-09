@@ -66,4 +66,26 @@ public abstract class ClaimDatabase extends RoomDatabase {
     public static Attachment.Type toAttachmentType(final String name) {
         return name == null ? null : Attachment.Type.valueOf(name);
     }
+
+    public Runnable createClaimItemTask(final ClaimItem claimItem) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                beginTransaction();
+                try {
+                    final long claimId = claimItemDao().insert(claimItem);
+                    claimItem.id = claimId; // assign the generated ID to the ClaimItem
+
+                    for (final Attachment attachment : claimItem.getAttachments()) {
+                        attachment.claimItemId = claimId; // assign the parent ID to the Attachments
+                        attachment.id = attachmentDao().insert(attachment);
+                    }
+
+                    setTransactionSuccessful(); // COMMIT rather than ROLLBACK
+                } finally {
+                    endTransaction();
+                }
+            }
+        };
+    }
 }

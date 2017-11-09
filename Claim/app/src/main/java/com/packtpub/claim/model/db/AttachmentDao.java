@@ -19,7 +19,7 @@ import java.util.List;
 public interface AttachmentDao {
 
     @Query("SELECT * FROM attachment WHERE claimItemId = :claimItemId")
-    LiveData<List<Attachment>> selectForClaimItemId(final long claimItemId);
+    LiveData<List<Attachment>> selectForClaimItemId(long claimItemId);
 
     @Insert
     long insert(Attachment attachment);

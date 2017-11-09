@@ -15,12 +15,9 @@ import java.io.File;
  */
 @Entity(indices = @Index("claimItemId"))
 public class Attachment implements Parcelable {
-
     @PrimaryKey(autoGenerate = true)
     public long id;
-
     public long claimItemId;
-
     File file;
     Type type;
 
@@ -71,6 +68,7 @@ public class Attachment implements Parcelable {
     }
 
     public enum Type {
+
         IMAGE,
         UNKNOWN;
 
@@ -90,5 +88,4 @@ public class Attachment implements Parcelable {
             return new Attachment[size];
         }
     };
-
 }
