@@ -23,15 +23,18 @@ import com.packtpub.claim.ui.presenters.ItemPresenter;
 
 import com.packtpub.claim.util.ActionCommand;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
  * Created by jason on 2017/11/09.
  */
 public class ClaimItemAdapter extends RecyclerView.Adapter<DataBoundViewHolder<ItemPresenter, ClaimItem>> {
+
     private final UpdateDisplayListCommand updateCommand = new UpdateDisplayListCommand();
     private final CreateDisplayListCommand createDisplayListCommand = new CreateDisplayListCommand();
 
@@ -91,7 +94,9 @@ public class ClaimItemAdapter extends RecyclerView.Adapter<DataBoundViewHolder<I
         return items.get(position).layout;
     }
 
-    private class CreateDisplayListCommand extends ActionCommand<List<ClaimItem>, List<DisplayItem>> {
+    private class CreateDisplayListCommand
+            extends ActionCommand<List<ClaimItem>, List<DisplayItem>> {
+
         boolean isDividerRequired(final ClaimItem item1, final ClaimItem item2) {
             final Calendar c1 = Calendar.getInstance();
             final Calendar c2 = Calendar.getInstance();
@@ -103,12 +108,52 @@ public class ClaimItemAdapter extends RecyclerView.Adapter<DataBoundViewHolder<I
                     || c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR);
         }
 
+        int countDays(final Date timestamp) {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime(timestamp);
+
+            final Calendar counterCalendar = Calendar.getInstance();
+            counterCalendar.clear(Calendar.HOUR_OF_DAY);
+            counterCalendar.clear(Calendar.MINUTE);
+            counterCalendar.clear(Calendar.SECOND);
+            counterCalendar.clear(Calendar.MILLISECOND);
+
+            int days = 0;
+            while (calendar.before(counterCalendar)) {
+                days++;
+                counterCalendar.add(Calendar.DAY_OF_YEAR, -1);
+            }
+
+            return days;
+        }
+
+        double[] getSpendingPerDay(final List<ClaimItem> claimItems) {
+            final double[] daysSpending = new double[10];
+            final int lastItem = daysSpending.length - 1;
+            Arrays.fill(daysSpending, 0);
+
+            for (final ClaimItem item : claimItems) {
+                final int distance = countDays(item.getTimestamp());
+
+                if (distance > lastItem) {
+                    break;
+                }
+
+                daysSpending[lastItem - distance] += item.getAmount();
+            }
+
+            return daysSpending;
+        }
+
         @Override
         public List<DisplayItem> onBackground(
                 final List<ClaimItem> claimItems)
                 throws Exception {
 
             final List<DisplayItem> output = new ArrayList<>();
+            output.add(new DisplayItem(
+                    R.layout.card_spending_graph,
+                    getSpendingPerDay(claimItems)));
 
             for (int i = 0; i < claimItems.size(); i++) {
                 final ClaimItem item = claimItems.get(i);
@@ -143,10 +188,10 @@ public class ClaimItemAdapter extends RecyclerView.Adapter<DataBoundViewHolder<I
                 throws Exception {
 
             final List<DisplayItem> oldDisplay = args.first;
-            final List<DisplayItem> newDisplay = createDisplayListCommand.onBackground(args.second);
+            final List<DisplayItem> newDisplay =
+                    createDisplayListCommand.onBackground(args.second);
 
             final DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-
                 @Override
                 public int getOldListSize() {
                     return oldDisplay.size();
@@ -170,8 +215,11 @@ public class ClaimItemAdapter extends RecyclerView.Adapter<DataBoundViewHolder<I
                         case R.layout.card_claim_item:
                             final ClaimItem oldClaimItem = (ClaimItem) oldItem.value;
                             final ClaimItem newClaimItem = (ClaimItem) newItem.value;
-                            return oldClaimItem.id == newClaimItem.id;
+                            return oldClaimItem != null
+                                    && newClaimItem != null
+                                    && oldClaimItem.id == newClaimItem.id;
                         case R.layout.widget_divider:
+                        case R.layout.card_spending_graph:
                             return true;
                     }
 
@@ -187,9 +235,13 @@ public class ClaimItemAdapter extends RecyclerView.Adapter<DataBoundViewHolder<I
                         case R.layout.card_claim_item:
                             final ClaimItem oldClaimItem = (ClaimItem) oldItem.value;
                             final ClaimItem newClaimItem = (ClaimItem) newItem.value;
-                            return oldClaimItem.equals(newClaimItem);
+                            return oldClaimItem != null
+                                    && newClaimItem != null
+                                    && oldClaimItem.equals(newClaimItem);
                         case R.layout.widget_divider:
                             return true;
+                        case R.layout.card_spending_graph:
+                            return false;
                     }
 
                     return false;
