@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 
-import android.widget.TextView;
 import android.widget.RadioGroup;
+import android.widget.TextSwitcher;
 
 import com.packtpub.claim.R;
 
@@ -23,7 +23,7 @@ import com.packtpub.claim.model.Category;
 public class CategoryPickerFragment extends Fragment {
 
     private RadioGroup categories;
-    private TextView categoryLabel;
+    private TextSwitcher categoryLabel;
 
     @Override
     public View onCreateView(
@@ -34,7 +34,7 @@ public class CategoryPickerFragment extends Fragment {
         final View picker = inflater.inflate(R.layout.fragment_category_picker, container, false);
 
         categories = (RadioGroup) picker.findViewById(R.id.categories);
-        categoryLabel = (TextView) picker.findViewById(R.id.selected_category);
+        categoryLabel = (TextSwitcher) picker.findViewById(R.id.selected_category);
 
         categories.setOnCheckedChangeListener(new IconPickerWrapper(categoryLabel));
         categories.check(R.id.other);
