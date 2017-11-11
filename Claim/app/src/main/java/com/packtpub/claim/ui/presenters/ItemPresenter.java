@@ -38,19 +38,18 @@ public class ItemPresenter {
 
         switch (category) {
             case ACCOMMODATION:
-                return resources.getDrawable(R.drawable.ic_hotel_black);
+                return resources.getDrawable(R.drawable.ic_hotel_color);
             case FOOD:
-                return resources.getDrawable(R.drawable.ic_food_black);
+                return resources.getDrawable(R.drawable.ic_food_color);
             case TRANSPORT:
-                return resources.getDrawable(R.drawable.ic_transport_black);
+                return resources.getDrawable(R.drawable.ic_transport_color);
             case ENTERTAINMENT:
-                return
-                        resources.getDrawable(R.drawable.ic_entertainment_black);
+                return resources.getDrawable(R.drawable.ic_entertainment_color);
             case BUSINESS:
-                return resources.getDrawable(R.drawable.ic_business_black);
+                return resources.getDrawable(R.drawable.ic_business_color);
             case OTHER:
             default:
-                return resources.getDrawable(R.drawable.ic_other_black);
+                return resources.getDrawable(R.drawable.ic_other_color);
         }
     }
 
